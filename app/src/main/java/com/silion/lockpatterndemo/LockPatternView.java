@@ -67,11 +67,11 @@ public class LockPatternView extends View {
     private void line2Canvas(Canvas canvas, Circle startCircle, Circle endCircle) {
         if (startCircle.mState == Circle.STATE_PRESSED) {
             mPaint.setColor(getResources().getColor(R.color.b));
-            mPaint.setStrokeWidth(10f);
+            mPaint.setStrokeWidth(20f);
             canvas.drawLine(startCircle.x, startCircle.y, endCircle.x, endCircle.y, mPaint);
         } else if (endCircle.mState == Circle.STATE_ERROR) {
             mPaint.setColor(getResources().getColor(R.color.c));
-            mPaint.setStrokeWidth(10f);
+            mPaint.setStrokeWidth(20f);
             canvas.drawLine(startCircle.x, startCircle.y, endCircle.x, endCircle.y, mPaint);
         }
         mPaint.reset();
