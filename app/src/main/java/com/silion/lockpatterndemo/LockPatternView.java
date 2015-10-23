@@ -27,6 +27,8 @@ public class LockPatternView extends View {
 
     private Circle mMovingCircle;
 
+    public OnPatternChangeListener mOnPatternChangeListener;
+
     public LockPatternView(Context context) {
         super(context);
     }
@@ -42,7 +44,7 @@ public class LockPatternView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (!mIsInit) {
-            initPoints();
+            initCircle();
         }
         circle2Canvas(canvas);
         if (mCircleList != null && mCircleList.size() > 1) {
@@ -62,6 +64,7 @@ public class LockPatternView extends View {
 
     /**
      * draw line 2 canvas
+     *
      * @param canvas used to draw
      */
     private void line2Canvas(Canvas canvas, Circle startCircle, Circle endCircle) {
@@ -103,7 +106,7 @@ public class LockPatternView extends View {
     /**
      * init points
      */
-    public void initPoints() {
+    public void initCircle() {
         int lenght;
 
         // 1. get layout width and height
@@ -132,6 +135,14 @@ public class LockPatternView extends View {
         mCircle[2][1] = new Circle(mOffsetsX + lenght / 2, mOffsetsY + (lenght - lenght / 4), 65f);
         mCircle[2][2] = new Circle(mOffsetsX + (lenght - lenght / 4), mOffsetsY + (lenght - lenght / 4), 65f);
 
+        // 4. init index
+        int index = 1;
+        for (Circle[] circles : mCircle) {
+            for (Circle circle : circles) {
+                circle.mIndex = index++;
+            }
+        }
+
         mIsInit = true;
     }
 
@@ -139,22 +150,22 @@ public class LockPatternView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         float x = event.getX();
         float y = event.getY();
-        Circle circle = null;
+        Circle touchCircle = null;
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN: {
                 mIsFinish = false;
                 resetCircleList();
-                circle = checkSelectCircle(x, y);
-                if (circle != null) {
+                touchCircle = checkSelectCircle(x, y);
+                if (touchCircle != null) {
                     mIsSelect = true;
                 }
                 break;
             }
             case MotionEvent.ACTION_MOVE: {
                 if (mIsSelect) {
-                    circle = checkSelectCircle(x, y);
-                    if (circle == null) {
+                    touchCircle = checkSelectCircle(x, y);
+                    if (touchCircle == null) {
                         mMovingCircle = new Circle(x, y);
                     }
                 }
@@ -163,18 +174,19 @@ public class LockPatternView extends View {
             case MotionEvent.ACTION_UP: {
                 mIsFinish = true;
                 mIsSelect = false;
+                mMovingCircle = null;
                 break;
             }
             default:
                 break;
         }
         // avoid repested select circle2Canvas
-        if (mIsSelect && !mIsFinish && circle != null) {
-            if (repeatedCircle(circle)) {
-                mMovingCircle = circle;
+        if (mIsSelect && !mIsFinish && touchCircle != null) {
+            if (repeatedCircle(touchCircle)) {
+                mMovingCircle = touchCircle;
             } else {
-                circle.mState = Circle.STATE_PRESSED;
-                mCircleList.add(circle);
+                touchCircle.mState = Circle.STATE_PRESSED;
+                mCircleList.add(touchCircle);
             }
         }
 
@@ -182,6 +194,13 @@ public class LockPatternView extends View {
         if (mIsFinish) {
             if (mCircleList.size() < 4) {
                 errorPattern();
+                mOnPatternChangeListener.onPatternChange(null);
+            } else {
+                String pattern = "";
+                for (Circle circle : mCircleList) {
+                    pattern = pattern + circle.mIndex;
+                }
+                mOnPatternChangeListener.onPatternChange(pattern);
             }
         }
 
@@ -253,7 +272,24 @@ public class LockPatternView extends View {
 
         public boolean inCircle(float movingX, float movingY) {
             double d = Math.sqrt((x - movingX) * (x - movingX) + (y - movingY) * (y - movingY));
-            return  d <= r;
+            return d <= r;
+        }
+    }
+
+    /**
+     * Pattern Listener
+     */
+    public interface OnPatternChangeListener {
+        void onPatternChange(String pattern);
+    }
+
+    /**
+     * set pattern listener
+     * @param listener
+     */
+    public void setOnPatternChangeListener(OnPatternChangeListener listener) {
+        if (listener != null) {
+            mOnPatternChangeListener = listener;
         }
     }
 }
