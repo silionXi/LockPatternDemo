@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mFragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.container, new LockFragment());
+        fragmentTransaction.add(R.id.container, new LockFragment());
         fragmentTransaction.commit();
     }
 
@@ -97,17 +97,18 @@ public class MainActivity extends Activity {
         }
     }
 
-    private void pushFragment(Fragment fragment) {
+    public void pushFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        String tag = fragment.getClass().getSimpleName();
-        fragmentTransaction.add(R.id.container, fragment, tag);
-        fragmentTransaction.addToBackStack(tag);
 
         Fragment currentFragment = mFragmentManager.findFragmentById(R.id.container);
-        if (currentFragment != null) {
-            if (currentFragment.getClass().getSimpleName().equals(LockFragment.class.getSimpleName())) {
-                fragmentTransaction.remove(currentFragment);
-            } else {
+        if (currentFragment != null && currentFragment instanceof LockFragment) {
+            String tag = fragment.getClass().getSimpleName();
+            fragmentTransaction.replace(R.id.container, fragment, tag);
+        } else {
+            String tag = fragment.getClass().getSimpleName();
+            fragmentTransaction.add(R.id.container, fragment, tag);
+            fragmentTransaction.addToBackStack(tag);
+            if (currentFragment != null) {
                 fragmentTransaction.hide(currentFragment);
             }
         }
@@ -115,5 +116,9 @@ public class MainActivity extends Activity {
         fragmentTransaction.commitAllowingStateLoss();
         // to avoid multi onclick to add multi fragment
         //mFragmentManager.executePendingTransactions();
+    }
+
+    public void popFragment() {
+        mFragmentManager.popBackStackImmediate();
     }
 }
