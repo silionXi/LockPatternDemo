@@ -172,9 +172,11 @@ public class LockPatternView extends View {
                 break;
             }
             case MotionEvent.ACTION_UP: {
-                mIsFinish = true;
-                mIsSelect = false;
-                mMovingCircle = null;
+                if (mIsSelect) {
+                    mIsFinish = true;
+                    mIsSelect = false;
+                    mMovingCircle = null;
+                }
                 break;
             }
             default:
