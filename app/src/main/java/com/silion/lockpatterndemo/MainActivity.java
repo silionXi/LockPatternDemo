@@ -25,8 +25,36 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         mFragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.container, new LockFragment());
+        Fragment fragment = new UnlockFragment();
+        String tag = fragment.getClass().getSimpleName();
+        fragmentTransaction.add(R.id.container, fragment, tag);
         fragmentTransaction.commit();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        Fragment currentFragment = mFragmentManager.findFragmentById(R.id.container);
+        if (!(currentFragment != null && currentFragment instanceof LockFragment)) {
+            fragmentTransaction.add(R.id.container, new LockFragment());
+            fragmentTransaction.addToBackStack(null);
+            if (currentFragment != null) {
+                fragmentTransaction.hide(currentFragment);
+            }
+            fragmentTransaction.commit();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mFragmentManager.getBackStackEntryCount() > 0) {
+            IFragmentBase fragment = (IFragmentBase) mFragmentManager.findFragmentById(R.id.container);
+            fragment.onBackPressed();
+        } else {
+            finish();
+        }
     }
 
     public void performActionLink(String actionLink) {
@@ -62,7 +90,7 @@ public class MainActivity extends Activity {
                         switch (path) {
                             case "main": {
                                 Bundle arguments = new Bundle();
-                                FragmentBase fragment = new unlockFragment();
+                                FragmentBase fragment = new UnlockFragment();
                                 fragment.setArguments(arguments);
                                 pushFragment(fragment);
                                 break;
@@ -99,18 +127,13 @@ public class MainActivity extends Activity {
 
     public void pushFragment(Fragment fragment) {
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
+        String tag = fragment.getClass().getSimpleName();
+        fragmentTransaction.add(R.id.container, fragment, tag);
+        fragmentTransaction.addToBackStack(tag);
 
         Fragment currentFragment = mFragmentManager.findFragmentById(R.id.container);
-        if (currentFragment != null && currentFragment instanceof LockFragment) {
-            String tag = fragment.getClass().getSimpleName();
-            fragmentTransaction.replace(R.id.container, fragment, tag);
-        } else {
-            String tag = fragment.getClass().getSimpleName();
-            fragmentTransaction.add(R.id.container, fragment, tag);
-            fragmentTransaction.addToBackStack(tag);
-            if (currentFragment != null) {
-                fragmentTransaction.hide(currentFragment);
-            }
+        if (currentFragment != null) {
+            fragmentTransaction.hide(currentFragment);
         }
 
         fragmentTransaction.commitAllowingStateLoss();

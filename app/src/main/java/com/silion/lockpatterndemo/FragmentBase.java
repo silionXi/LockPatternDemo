@@ -13,7 +13,7 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class FragmentBase extends Fragment {
+public class FragmentBase extends Fragment implements IFragmentBase{
     protected MainActivity mMainActivity;
     protected String mTitle;
     protected View mCustomActionBarView;
@@ -31,5 +31,18 @@ public class FragmentBase extends Fragment {
 
     protected void performActionLink(String actionLink) {
         mMainActivity.performActionLink(actionLink);
+    }
+
+
+    @Override
+    public void updataActionBar() {
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mMainActivity != null) {
+            mMainActivity.popFragment();
+        }
     }
 }

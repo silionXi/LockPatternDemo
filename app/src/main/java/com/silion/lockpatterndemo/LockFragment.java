@@ -55,6 +55,13 @@ public class LockFragment extends FragmentBase implements LockPatternView.OnPatt
     }
 
     @Override
+    public void onBackPressed() {
+        if (mMainActivity != null) {
+            mMainActivity.finish();
+        }
+    }
+
+    @Override
     public void onPatternChange(final String pattern) {
         if (mPassword == null || mPassword.length() < 4) {
             if (pattern == null) {
@@ -65,13 +72,13 @@ public class LockFragment extends FragmentBase implements LockPatternView.OnPatt
                     @Override
                     public void onClick(View v) {
                         mPreferences.edit().putString("password", pattern).apply();
-                        performActionLink("silion://view/main");
+                        mMainActivity.popFragment();
                     }
                 });
             }
         } else {
             if (mPassword.equals(pattern)) {
-                performActionLink("silion://view/main");
+                mMainActivity.popFragment();
             } else {
                 Toast.makeText(mMainActivity, getString(R.string.password_error), Toast.LENGTH_SHORT).show();
             }
