@@ -6,6 +6,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.WindowManager;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
@@ -24,6 +25,17 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mFragmentManager = getFragmentManager();
+        mFragmentManager.addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                Fragment fragment = mFragmentManager.findFragmentById(R.id.container);
+                if (fragment instanceof IFragmentBase) {
+                    IFragmentBase fragmentBase = (IFragmentBase) fragment;
+                    fragmentBase.updataActionBar();
+                    getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                }
+            }
+        });
         FragmentTransaction fragmentTransaction = mFragmentManager.beginTransaction();
         Fragment fragment = new UnlockFragment();
         String tag = fragment.getClass().getSimpleName();

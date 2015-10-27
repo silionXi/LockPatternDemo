@@ -1,6 +1,7 @@
 package com.silion.lockpatterndemo;
 
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -36,7 +37,20 @@ public class FragmentBase extends Fragment implements IFragmentBase{
 
     @Override
     public void updataActionBar() {
+        ActionBar actionBar = mMainActivity.getActionBar();
+        if (actionBar == null) {
+            return;
+        }
 
+        int displayOptions = actionBar.getDisplayOptions();
+
+        if ((displayOptions & ActionBar.DISPLAY_SHOW_TITLE) > 0) {
+            actionBar.setTitle(mTitle);
+        }
+
+        if ((displayOptions & ActionBar.DISPLAY_SHOW_CUSTOM) > 0) {
+            //TODO custom actionbar view
+        }
     }
 
     @Override
