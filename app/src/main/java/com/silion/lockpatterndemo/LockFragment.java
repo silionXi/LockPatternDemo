@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * A simple {@link FragmentBase} subclass.
  */
 public class LockFragment extends FragmentBase implements LockPatternView.OnPatternChangeListener {
     private View mRootView = null;
