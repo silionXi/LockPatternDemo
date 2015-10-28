@@ -34,6 +34,7 @@ public class UnlockFragment extends FragmentBase {
         if (actionBar == null) {
             return;
         }
+        actionBar.show();
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE);
         super.updataActionBar();
     }

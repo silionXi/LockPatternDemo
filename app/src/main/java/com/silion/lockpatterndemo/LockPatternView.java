@@ -69,11 +69,11 @@ public class LockPatternView extends View {
      */
     private void line2Canvas(Canvas canvas, Circle startCircle, Circle endCircle) {
         if (startCircle.mState == Circle.STATE_PRESSED) {
-            mPaint.setColor(getResources().getColor(R.color.b));
+            mPaint.setColor(getResources().getColor(R.color.x));
             mPaint.setStrokeWidth(20f);
             canvas.drawLine(startCircle.x, startCircle.y, endCircle.x, endCircle.y, mPaint);
         } else if (endCircle.mState == Circle.STATE_ERROR) {
-            mPaint.setColor(getResources().getColor(R.color.c));
+            mPaint.setColor(getResources().getColor(R.color.w));
             mPaint.setStrokeWidth(20f);
             canvas.drawLine(startCircle.x, startCircle.y, endCircle.x, endCircle.y, mPaint);
         }
@@ -90,13 +90,13 @@ public class LockPatternView extends View {
             for (int j = 0; j < mCircle[i].length; j++) {
                 Circle circle = mCircle[i][j];
                 if (circle.mState == Circle.STATE_PRESSED) {
-                    mPaint.setColor(getResources().getColor(R.color.b));
+                    mPaint.setColor(getResources().getColor(R.color.x));
                     canvas.drawCircle(circle.x, circle.y, circle.r, mPaint);
                 } else if (circle.mState == Circle.STATE_ERROR) {
-                    mPaint.setColor(getResources().getColor(R.color.c));
+                    mPaint.setColor(getResources().getColor(R.color.w));
                     canvas.drawCircle(circle.x, circle.y, circle.r, mPaint);
                 } else if (circle.mState == Circle.STATE_NORMAL) {
-                    mPaint.setColor(getResources().getColor(R.color.a));
+                    mPaint.setColor(getResources().getColor(R.color.g));
                     canvas.drawCircle(circle.x, circle.y, circle.r, mPaint);
                 }
             }

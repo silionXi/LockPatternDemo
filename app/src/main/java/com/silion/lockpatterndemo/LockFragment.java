@@ -1,6 +1,7 @@
 package com.silion.lockpatterndemo;
 
 
+import android.app.ActionBar;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -14,7 +15,7 @@ import android.widget.Toast;
 
 
 /**
- * A simple {@link FragmentBase} subclass.
+ * A simple {@link Fragment} subclass.
  */
 public class LockFragment extends FragmentBase implements LockPatternView.OnPatternChangeListener {
     private View mRootView = null;
@@ -59,6 +60,15 @@ public class LockFragment extends FragmentBase implements LockPatternView.OnPatt
         if (mMainActivity != null) {
             mMainActivity.finish();
         }
+    }
+
+    @Override
+    public void updataActionBar() {
+        ActionBar actionBar = mMainActivity.getActionBar();
+        if (actionBar == null) {
+            return;
+        }
+        actionBar.hide();
     }
 
     @Override
